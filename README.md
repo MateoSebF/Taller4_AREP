@@ -50,7 +50,7 @@ git clone https://github.com/MateoSebF/Taller3_AREP
 Navigate to the Project Directory:
 
 ```
-cd Taller1_AREP
+cd Taller3_AREP
 ```
 
 Build the Project with Maven:
