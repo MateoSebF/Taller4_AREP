@@ -64,6 +64,11 @@ Run the Web Server:
 ```
 mvn clean compile exec:java
 ```
+or
+```
+java -cp "target/classes" co.edu.eci.arep.webserver.WebServer
+```
+
 ### Architecture
 The core architecture of this project revolves around the HTTP protocol. At its center, we have an HttpServer that manages incoming user requests. To ensure scalability and maintainability, the design includes two complementary components: HttpRequest and HttpResponse. These two classes standardize the input and output of the server, considering key aspects such as:
 
