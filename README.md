@@ -95,6 +95,7 @@ In Laboratory 3, the architecture is slightly modified to offer more flexibility
 
 A complete example demonstrating the use of annotations is already set up. You can find an example in the classes in controller package.
 
+You can return in your mapping methods HttpResponse or a string, if you return a string you will not be able to indicate the headers and the code.
 ### Test the REST serices
 A simple way to test this project is by retrieving an image in different formats. You can achieve this in three ways:
 
