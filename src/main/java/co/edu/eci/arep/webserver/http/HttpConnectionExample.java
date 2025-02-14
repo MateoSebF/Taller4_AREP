@@ -1,7 +1,9 @@
 package co.edu.eci.arep.webserver.http;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -16,6 +18,7 @@ public class HttpConnectionExample {
 
     /**
      * Main method
+     * 
      * @param args
      * @throws IOException
      */
@@ -28,16 +31,16 @@ public class HttpConnectionExample {
     /**
      * Constructor
      */
-    public HttpConnectionExample(){
+    public HttpConnectionExample() {
 
     }
 
     /**
      * This method makes a connection to the server
      * 
-     * @param method the method to use
+     * @param method   the method to use
      * @param endPoint the endpoint to connect
-     * @param query the query to send
+     * @param query    the query to send
      * 
      * @throws IOException
      * @return HttpURLConnection
@@ -55,9 +58,9 @@ public class HttpConnectionExample {
     /**
      * This method gets the response from the server
      * 
-     * @param method the method to use
+     * @param method   the method to use
      * @param endPoint the endpoint to connect
-     * @param query the query to send
+     * @param query    the query to send
      * 
      * @throws IOException
      * @return String
@@ -69,8 +72,9 @@ public class HttpConnectionExample {
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("User-Agent", USER_AGENT);
-        
-        //The following invocation perform the connection implicitly before getting the code
+
+        // The following invocation perform the connection implicitly before getting the
+        // code
         int responseCode = con.getResponseCode();
         System.out.println("GET Response Code :: " + responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) { // success
@@ -94,39 +98,36 @@ public class HttpConnectionExample {
     /**
      * This method gets the response from the server
      * 
-     * @param method the method to use
+     * @param method   the method to use
      * @param endPoint the endpoint to connect
-     * @param query the query to send
+     * @param query    the query to send
      * 
      * @throws IOException
      * @return byte[]
-     */	
+     */
     public byte[] getResponseBytes(String method, String endPoint, String query) throws IOException {
         String newUrl = GET_URL + endPoint + query;
         System.out.println(newUrl);
-        URL obj = new URL(newUrl);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        URL url = new URL(newUrl);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("User-Agent", USER_AGENT);
-        
-        //The following invocation perform the connection implicitly before getting the code
+
         int responseCode = con.getResponseCode();
         System.out.println("GET Response Code :: " + responseCode);
-        if (responseCode == HttpURLConnection.HTTP_OK) { // success
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            InputStream in = con.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
             }
             in.close();
-
-            // print result
-            return response.toString().getBytes();
+            return baos.toByteArray();
         } else {
             return "GET request not worked".getBytes();
         }
+
     }
-} 
+}

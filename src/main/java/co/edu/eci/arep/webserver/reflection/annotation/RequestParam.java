@@ -11,6 +11,6 @@ public @interface RequestParam {
 
     String value();
 
-    String defaultValue();
+    String defaultValue() default "";
     
 }

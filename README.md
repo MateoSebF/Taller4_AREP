@@ -1,10 +1,12 @@
 # Web Server
 
-This laboratory allows you to explore various aspects of network connections, providing a foundation for understanding how URLs work, how sockets establish basic server-client communication, and how to create a web server running on port 35000.
+In this laboratory project, you will explore various aspects of network connections. The work provides a solid foundation for understanding URL mechanisms, how sockets enable basic server-client communication, and how to build a web server running on port 35000.
 
-The server can handle requests for HTML, CSS, JavaScript, and image files, as well as expose a REST API that creates objects based on query parameters—all implemented using Java's networking library.
+The server supports requests for HTML, CSS, JavaScript, and image files, and it also exposes a REST API that generates objects based on query parameters—all implemented using Java’s networking library.
 
-A key feature of this project is the ability to define your own server logic using lambda functions, enabling flexible and efficient handling of different types of requests.
+A key feature of this project introduced in Laboratory 2 is the ability to define custom server logic with lambda functions, enabling flexible and efficient request handling.
+
+Additionally, Laboratory 3 introduces an innovative feature: the implementation of classes that simulate a REST controller using annotations. This functionality effectively mimics the behavior of the Spring Boot framework, providing a familiar structure for those experienced with it.
 
 ## Getting Started
 
@@ -41,7 +43,7 @@ Follow these steps to set up and run the project in your local development envir
 Clone the Repository:
 
 ```
-git clone https://github.com/MateoSebF/Taller2_AREP
+git clone https://github.com/MateoSebF/Taller3_AREP
 
 ```
 
@@ -73,20 +75,52 @@ To ensure proper functionality, your lambda functions must return an HttpRespons
 
 An important aspect to configure is the location from which the server will serve static files. By default, it uses the /src/main/resources/static folder.
 
+Laboratory 2:
+
 A complete example demonstrating the use of HTML, CSS, JavaScript, and images is already set up. You can find and test this example in the WebServer class.
 
 Currently, the server supports the GET, POST, PUT, and UPDATE methods, each requiring the appropriate handler function. Here’s a complete usage example:
 
 ![Use example](readimages/example1.png)
 
-### Test the REST serices
-To test this setup, you can use the following endpoint after running the WebServer. By default, it will serve static files from the correct folder:
+Laboratory 3:
 
+In Laboratory 3, the architecture is slightly modified to offer more flexibility. You will implement your methods with three new annotations:
+
+1. @RestController: Indicates that a class serves as a REST API controller. Classes marked with this annotation are executed when you start the web server application, and their endpoints are exposed under /rest.
+
+2. @GetMapping, @PostMapping, @PutMapping, @DeleteMapping: These annotations map methods to their respective HTTP request types. Each annotation accepts a value representing the final endpoint (e.g., /hello), which will be accessible via /rest/hello.
+
+3. @RequestParam: This annotation represents a request parameter, accepting two values: the parameter name and a default value. It automatically maps query parameters from a request, simplifying both implementation and usage.
+
+A complete example demonstrating the use of annotations is already set up. You can find an example in the classes in controller package.
+
+### Test the REST serices
+A simple way to test this project is by retrieving an image in different formats. You can achieve this in three ways:
+
+Laboratory 1: Use the directory structure as set up in Laboratory 1.
+Laboratory 2: Employ a lambda function that performs the query, as demonstrated in Laboratory 2.
+Laboratory 3: Use the REST controller introduced in Laboratory 3 to read the folder, access the image, and return it.
+Below are the endpoints to test the functionality:
+
+Laboratory 1:
 http://localhost:35000/images/placeholder.png
 
-This request should return the following image:
+Laboratory 2:
+http://localhost:35000/app/image
+
+Laboratory 3:
+http://localhost:35000/rest/image
+
+All three requests should return the following image:
 
 ![Placeholder example](src/main/resources/static/images/placeholder.png)
+
+
+For example, if you want to retrieve the index HTML file, simply navigate to:
+http://localhost:35000/rest/index
+This endpoint is implemented in the Greeting controller.
+
 
 ## Running the tests
 
@@ -99,12 +133,18 @@ mvn test
 ```
 
 ### Break down into end to end tests
+The following tests verify the server's functionality by simulating HTTP requests for various file types—HTML, CSS, JavaScript, and images—and validating the server's responses. These tests ensure that the server correctly serves content and returns the appropriate HTTP status codes.
 
-The following tests verify the functionality of the server by simulating HTTP requests for different types of files (HTML, CSS, JS, images) and checking the server's responses. These tests ensure that the server handles the requests correctly, serves the expected content, and returns the appropriate status codes.
+HTML Test Example:
+For instance, the testMakeConnectionHTML() test confirms that a request for index.html responds with a 200 OK status. This verifies that the server is running and can handle HTML page requests as expected.
 
-For example, the testMakeConnectionHTML() test checks if the server successfully responds to a request for index.html with a 200 OK status. This ensures that the server is running and can handle requests for HTML pages correctly.
+Laboratory 2
 
-Additionally, I’ve introduced a test class for the HttpRequest to verify its functionality. This includes verifying that the HttpRequest class handles the reading of requests correctly, particularly when the request body is read as a String.
+In Laboratory 2, an additional test class for HttpRequest was introduced. This test class ensures that the HttpRequest component correctly reads and processes HTTP requests, particularly verifying that the request body is accurately read as a String.
+
+Laboratory 3
+
+Laboratory 3 includes the HttpControllerTest, which automatically validates the responses for specific endpoints. This test verifies the status code, content type, and content for connections to endpoints such as /rest/index and /rest/image, ensuring that the REST API behaves as intended.
 
 ### And coding style tests
 

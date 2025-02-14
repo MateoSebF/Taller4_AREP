@@ -12,12 +12,14 @@ import java.util.HashMap;
 import java.io.*;
 import java.util.function.BiFunction;
 
+import co.edu.eci.arep.webserver.MicroServer;
+
 /**
  * HttpServer
  */
 public class HttpServer implements Runnable {
 
-    public static HashMap<String, BiFunction<HttpRequest, HttpResponse, HttpResponse>> services = new HashMap<>();
+    public static HashMap<String, BiFunction<HttpRequest, HttpResponse, HttpResponse>> servicesLambda = new HashMap<>();
     private static String staticRestFilesPath = "";
 
     /**
@@ -105,7 +107,9 @@ public class HttpServer implements Runnable {
             return sendNotFoundResponse();
         }
         URI resourceURI = httpRequest.getUri();
-        if (resourceURI.getPath().endsWith(".html")) {
+        if (resourceURI.getPath().startsWith("/rest")) {
+            return manageRequestFromRestController(httpRequest);
+        } else if (resourceURI.getPath().endsWith(".html")) {
             return sendGetHtmlString(httpRequest);
         } else if (resourceURI.getPath().endsWith(".css")) {
             return sendGetCssString(httpRequest);
@@ -122,6 +126,13 @@ public class HttpServer implements Runnable {
             return sendNotFoundResponse();
         }
 
+    }
+
+    public static HttpResponse manageRequestFromRestController(HttpRequest httpRequest) throws IOException {
+        URI uri = httpRequest.getUri();
+        String path = uri.toString().substring(5);
+        String method = httpRequest.getMethod().toLowerCase();
+        return MicroServer.simulateRequest("_" + method + path);
     }
 
     /**
@@ -141,7 +152,7 @@ public class HttpServer implements Runnable {
         if (!new File(fileName).exists()) {
             return sendNotFoundResponse();
         }
-        
+
         HttpResponse response = new HttpResponse();
         response.setStatusCode(200);
         response.addHeader("Content-Type", "text/html");
@@ -238,9 +249,9 @@ public class HttpServer implements Runnable {
      * @return the response
      */
     private static HttpResponse sendGetImageString(HttpRequest httpRequest) throws IOException {
+        
         URI resourceURI = httpRequest.getUri();
         String fileName = staticRestFilesPath + resourceURI.getPath();
-        System.out.println(fileName);
         File file = new File(fileName);
         if (!file.exists()) {
             return sendNotFoundResponse();
@@ -276,12 +287,14 @@ public class HttpServer implements Runnable {
     private static HttpResponse manageRestAPI(HttpRequest httpRequest)
             throws IOException {
         String endPoint = httpRequest.getMethod().toLowerCase() + "_" + httpRequest.getUri().getPath();
-        System.out.println(endPoint);
-        if (!services.containsKey(endPoint)) {
+        
+        if (!servicesLambda.containsKey(endPoint)) {
+            System.out.println("not app endpoint.");
             return sendNotFoundResponse();
         }
+        System.out.println(endPoint);
         HttpResponse response = new HttpResponse();
-        response = services.get(endPoint).apply(httpRequest, response);
+        response = servicesLambda.get(endPoint).apply(httpRequest, response);
         return response;
     }
 
@@ -317,18 +330,20 @@ public class HttpServer implements Runnable {
     }
 
     public static void get(String route, BiFunction<HttpRequest, HttpResponse, HttpResponse> function) {
-        services.put("get_/app" + route, function);
+        servicesLambda.put("get_/app" + route, function);
     }
 
     public static void post(String route, BiFunction<HttpRequest, HttpResponse, HttpResponse> function) {
-        services.put("post_/app" + route, function);
+        servicesLambda.put("post_/app" + route, function);
     }
 
     public static void put(String route, BiFunction<HttpRequest, HttpResponse, HttpResponse> function) {
-        services.put("put_/app" + route, function);
+        servicesLambda.put("put_/app" + route, function);
     }
 
     public static void delete(String route, BiFunction<HttpRequest, HttpResponse, HttpResponse> function) {
-        services.put("delete_/app" + route, function);
+        servicesLambda.put("delete_/app" + route, function);
     }
+
+    
 }

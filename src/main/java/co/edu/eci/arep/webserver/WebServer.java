@@ -18,12 +18,35 @@ import co.edu.eci.arep.webserver.http.HttpServer;
  */
 public class WebServer {
 
+    private static WebServer singleton;
+
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        getWebServerSingleton();
+    }
+
+    public static WebServer getWebServerSingleton() throws IOException, URISyntaxException{
+        if (singleton == null){
+            singleton = new WebServer();
+        }
+        return singleton;
+    }
+
     /**
      * @param args the command line arguments
      * @throws java.io.IOException
      * @throws java.net.URISyntaxException
      */
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public WebServer() throws IOException, URISyntaxException {
+        HttpServer.main(null);
+        createLambdaEndPoints();
+        createRestAnnotationEndPoints();
+    }
+
+    private static void createRestAnnotationEndPoints(){
+        MicroServer.main(null);
+    }
+
+    private static void createLambdaEndPoints(){
         HashMap<String, String> restApiObjects = new HashMap<>();
         HttpServer.staticfiles("/resources/static");
 
@@ -51,7 +74,7 @@ public class WebServer {
 
         HttpServer.get("/image", (req, resp) -> {
             try {
-                HttpRequest request = HttpRequest.parse("GET /app/frameworkPlaceholder.png HTTP/1.1");
+                HttpRequest request = HttpRequest.parse("GET /images/placeholder.png HTTP/1.1");
                 resp = HttpServer.manageRequestFromEndPoint(request);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -157,8 +180,6 @@ public class WebServer {
             restApiObjects.remove(name);
             return resp;
         });
-
-        HttpServer.main(args);
     }
 
 }

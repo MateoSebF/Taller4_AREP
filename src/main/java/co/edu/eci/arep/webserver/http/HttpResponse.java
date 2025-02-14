@@ -5,12 +5,13 @@ import java.util.Map;
 
 /**
  * Represents an HTTP response with status code, headers, and body.
- * Provides functionality to format the response into a proper HTTP response string.
+ * Provides functionality to format the response into a proper HTTP response
+ * string.
  * 
  * @author mateo.forero-f
  */
 public class HttpResponse {
-    
+
     private int statusCode;
     private Map<String, String> headers;
     private byte[] body;
@@ -18,7 +19,7 @@ public class HttpResponse {
     public HttpResponse() {
         this.headers = new HashMap<>();
     }
-    
+
     /**
      * Constructs an HttpResponse instance.
      * 
@@ -51,7 +52,7 @@ public class HttpResponse {
      */
     public void addHeader(String key, String value) {
         headers.put(key, value);
-    }   
+    }
 
     /**
      * Returns the response headers.
@@ -73,7 +74,7 @@ public class HttpResponse {
     public void setBody(String body) {
         this.body = body.getBytes();
     }
-    
+
     /**
      * Returns the response body.
      */
@@ -87,13 +88,12 @@ public class HttpResponse {
     public byte[] formatResponse() {
         StringBuilder response = new StringBuilder();
         response.append("HTTP/1.1 ").append(statusCode).append(" ").append(getStatusMessage()).append("\r\n");
-        
+
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             response.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
         }
-        
         response.append("\r\n"); // Blank line separating headers from body
-        
+
         byte[] byteResponse = response.toString().getBytes();
         if (body != null) {
             byteResponse = new byte[byteResponse.length + body.length];
@@ -101,7 +101,7 @@ public class HttpResponse {
             System.arraycopy(body, 0, byteResponse, response.toString().getBytes().length, body.length);
 
         }
-        
+
         return byteResponse;
     }
 

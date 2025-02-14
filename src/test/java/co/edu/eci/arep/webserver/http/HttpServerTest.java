@@ -2,6 +2,8 @@ package co.edu.eci.arep.webserver.http;
 
 import org.junit.jupiter.api.Test;
 
+import co.edu.eci.arep.webserver.WebServer;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
@@ -11,16 +13,18 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.BeforeAll;
 
 public class HttpServerTest {
     @BeforeAll
     public static void setUp() {
-        System.out.println("Iniciando servidor");
-        Thread thread = new Thread(new HttpServer());
-        HttpServer.staticfiles("/resources/static");
-        thread.start();
+        try {
+            WebServer.getWebServerSingleton();
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        } 
     }
 
     @Test
