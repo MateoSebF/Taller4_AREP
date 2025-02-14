@@ -121,6 +121,8 @@ For example, if you want to retrieve the index HTML file, simply navigate to:
 http://localhost:35000/rest/index
 This endpoint is implemented in the Greeting controller.
 
+Use postman for test:
+https://testeci.postman.co/workspace/TestEci-Workspace~1d36ca68-dbcc-4fe9-8928-836eb052ae5b/collection/33334270-3bd50790-7c1c-41fe-96f6-4a7a9b062d86?action=share&creator=33334270
 
 ## Running the tests
 
