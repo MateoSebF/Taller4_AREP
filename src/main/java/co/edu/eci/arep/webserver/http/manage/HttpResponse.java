@@ -1,4 +1,4 @@
-package co.edu.eci.arep.webserver.http;
+package co.edu.eci.arep.webserver.http.manage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +11,9 @@ import java.util.Map;
  * @author mateo.forero-f
  */
 public class HttpResponse {
+
+    public static final String NOT_FOUND_FILE = "The required file is not found.";
+    public static final String ERROR_READING_DATA = "The server fail reading data.";
 
     private int statusCode;
     private Map<String, String> headers;
@@ -127,5 +130,13 @@ public class HttpResponse {
      */
     public byte[] getBytes() {
         return formatResponse();
+    }
+
+    public static HttpResponse sendFailureMessage(int code, String bodyMessage) {
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setStatusCode(code);
+        httpResponse.addHeader("Content-type", "text/plain");
+        httpResponse.setBody(bodyMessage);
+        return httpResponse;
     }
 }

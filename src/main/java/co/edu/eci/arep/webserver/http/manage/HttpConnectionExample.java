@@ -1,4 +1,4 @@
-package co.edu.eci.arep.webserver.http;
+package co.edu.eci.arep.webserver.http.manage;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -24,7 +25,6 @@ public class HttpConnectionExample {
      */
     public static void main(String[] args) throws IOException {
         HttpConnectionExample http = new HttpConnectionExample();
-        System.out.println("Testing 1 - Send Http GET request");
         http.makeConnection("GET", "index.html", "");
     }
 
@@ -47,7 +47,6 @@ public class HttpConnectionExample {
      */
     public HttpURLConnection makeConnection(String method, String endPoint, String query) throws IOException {
         String newUrl = GET_URL + endPoint + query;
-        System.out.println("Sending 'GET' request to URL : " + newUrl);
         URL obj = new URL(newUrl);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
@@ -67,7 +66,6 @@ public class HttpConnectionExample {
      */
     public String getResponse(String method, String endPoint, String query) throws IOException {
         String newUrl = GET_URL + endPoint + query;
-        System.out.println("Sending 'GET' request to URL : " + newUrl);
         URL obj = new URL(newUrl);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
@@ -76,7 +74,6 @@ public class HttpConnectionExample {
         // The following invocation perform the connection implicitly before getting the
         // code
         int responseCode = con.getResponseCode();
-        System.out.println("GET Response Code :: " + responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) { // success
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     con.getInputStream()));
@@ -107,14 +104,12 @@ public class HttpConnectionExample {
      */
     public byte[] getResponseBytes(String method, String endPoint, String query) throws IOException {
         String newUrl = GET_URL + endPoint + query;
-        System.out.println(newUrl);
         URL url = new URL(newUrl);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("User-Agent", USER_AGENT);
 
         int responseCode = con.getResponseCode();
-        System.out.println("GET Response Code :: " + responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) {
             InputStream in = con.getInputStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

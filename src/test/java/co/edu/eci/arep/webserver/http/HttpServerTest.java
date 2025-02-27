@@ -3,6 +3,7 @@ package co.edu.eci.arep.webserver.http;
 import org.junit.jupiter.api.Test;
 
 import co.edu.eci.arep.webserver.WebServer;
+import co.edu.eci.arep.webserver.http.manage.HttpConnectionExample;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,18 +14,13 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.BeforeAll;
 
 public class HttpServerTest {
     @BeforeAll
     public static void setUp() {
-        try {
-            WebServer.getWebServerSingleton();
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        } 
+        WebServer.getWebServerSingleton();
     }
 
     @Test

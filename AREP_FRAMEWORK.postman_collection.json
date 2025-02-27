@@ -1,0 +1,249 @@
+{
+	"info": {
+		"_postman_id": "3bd50790-7c1c-41fe-96f6-4a7a9b062d86",
+		"name": "AREP_FRAMEWORK",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33334270",
+		"_collection_link": "https://testeci.postman.co/workspace/TestEci-Workspace~1d36ca68-dbcc-4fe9-8928-836eb052ae5b/collection/33334270-3bd50790-7c1c-41fe-96f6-4a7a9b062d86?action=share&source=collection_link&creator=33334270"
+	},
+	"item": [
+		{
+			"name": "TestAppPostObject",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/app/objectFromQuery?name=mateo&age=12&car=True&e1=h%26a=t&e2=h%26a=\"t\"&e3=\"%26a=\"t",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"app",
+						"objectFromQuery"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "mateo"
+						},
+						{
+							"key": "age",
+							"value": "12"
+						},
+						{
+							"key": "car",
+							"value": "True"
+						},
+						{
+							"key": "e1",
+							"value": "h%26a=t"
+						},
+						{
+							"key": "e2",
+							"value": "h%26a=\"t\""
+						},
+						{
+							"key": "e3",
+							"value": "\"%26a=\"t"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestAppGetObject",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/app/objectFromQuery?name=mateo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"app",
+						"objectFromQuery"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "mateo"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestImageResponse",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/images/placeholder.png",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"images",
+						"placeholder.png"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestRestHelloWithParam",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/rest/greeting?name=mateo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"rest",
+						"greeting"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "mateo"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestRestHtmlResponse",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/rest/index",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"rest",
+						"index"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestRestImageResponse",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/rest/image",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"rest",
+						"image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestAppGetImage",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/app/image",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"app",
+						"image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testConcurrency",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/rest/greetingWait?name=mateo&time=15000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"rest",
+						"greetingWait"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "mateo"
+						},
+						{
+							"key": "time",
+							"value": "15000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testConcurrency Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:35000/rest/greetingWait?name=mateo&time=15000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "35000",
+					"path": [
+						"rest",
+						"greetingWait"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "mateo"
+						},
+						{
+							"key": "time",
+							"value": "15000"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
