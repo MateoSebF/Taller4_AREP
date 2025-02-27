@@ -1,4 +1,4 @@
-package co.edu.eci.arep.webserver.reflection.annotation;
+package co.edu.eci.arep.webserver.reflection.annotation.mapping;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface DeleteMapping{
+public @interface PutMapping {
 
     String value();
     

@@ -6,10 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-import co.edu.eci.arep.webserver.http.HttpResponse;
-import co.edu.eci.arep.webserver.reflection.annotation.GetMapping;
+import co.edu.eci.arep.webserver.http.manage.HttpResponse;
 import co.edu.eci.arep.webserver.reflection.annotation.RequestParam;
 import co.edu.eci.arep.webserver.reflection.annotation.RestController;
+import co.edu.eci.arep.webserver.reflection.annotation.mapping.GetMapping;
 
 @RestController
 public class GreetingController {
@@ -17,6 +17,19 @@ public class GreetingController {
 	@GetMapping("/greeting")
 	public static String greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
 		return "Hola " + name;
+	}
+
+	@GetMapping("/greetingWait")
+	public static String greetingWait(@RequestParam(value = "name", defaultValue = "World") String name,
+										@RequestParam(value = "time", defaultValue = "5000") String time) {
+		int timeConvert = Integer.valueOf(time);
+		try {
+			Thread.sleep(timeConvert);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("endeed");
+		return "Hola " + name + " you wait " + timeConvert + "ms for this greeting.";
 	}
 
     @GetMapping("/pi")
@@ -27,7 +40,7 @@ public class GreetingController {
 	@GetMapping("/index")
 	public static HttpResponse index(){
 		HttpResponse httpResponse = new HttpResponse();
-		String fileName = "src/main/resources/static/index.html";
+		String fileName = "target/classes/static/index.html";
 		String outputLine = "";
         // Leer el contenido desde el archivo
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -48,7 +61,7 @@ public class GreetingController {
 
 	@GetMapping("/image")
 	public static HttpResponse image(){
-		String fileName = "src/main/resources/static/images/placeholder.png";
+		String fileName = "target/classes/static/images/placeholder.png";
         File file = new File(fileName);
 		HttpResponse response = new HttpResponse();
         // Determine the file extension to set the correct Content-Type

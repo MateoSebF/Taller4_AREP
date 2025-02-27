@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+import co.edu.eci.arep.webserver.http.manage.HttpRequest;
+
 public class HttpRequestTest {
 
     @Test

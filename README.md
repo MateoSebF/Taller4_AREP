@@ -1,12 +1,14 @@
 # Web Server
 
-In this laboratory project, you will explore various aspects of network connections. The work provides a solid foundation for understanding URL mechanisms, how sockets enable basic server-client communication, and how to build a web server running on port 35000.
+In this laboratory project, you will explore various aspects of network connections. The work provides a solid foundation for understanding URL mechanisms, how sockets enable basic server-client communication, and how to build a web server running on port 35000 by default.
 
 The server supports requests for HTML, CSS, JavaScript, and image files, and it also exposes a REST API that generates objects based on query parameters—all implemented using Java’s networking library.
 
 A key feature of this project introduced in Laboratory 2 is the ability to define custom server logic with lambda functions, enabling flexible and efficient request handling.
 
 Additionally, Laboratory 3 introduces an innovative feature: the implementation of classes that simulate a REST controller using annotations. This functionality effectively mimics the behavior of the Spring Boot framework, providing a familiar structure for those experienced with it.
+
+In the Laboratory 4, we introduced how to deploy this service using Docker and AWS.
 
 ## Getting Started
 
@@ -17,7 +19,7 @@ This project is built in Java using Maven. No additional dependencies are requir
 
 Before running this project, ensure you have the following installed on your system:
 
-* Java Development Kit (JDK) 21
+* Java Development Kit (JDK) 17 or more
     * Download and install from: [Oracle JDK or OpenJDK](https://www.oracle.com/co/java/technologies/downloads/)
     * Verify installation with:
         ```
@@ -43,14 +45,14 @@ Follow these steps to set up and run the project in your local development envir
 Clone the Repository:
 
 ```
-git clone https://github.com/MateoSebF/Taller3_AREP
+git clone https://github.com/MateoSebF/Taller4_AREP
 
 ```
 
 Navigate to the Project Directory:
 
 ```
-cd Taller3_AREP
+cd Taller4_AREP
 ```
 
 Build the Project with Maven:
@@ -130,6 +132,10 @@ This endpoint is implemented in the Greeting controller.
 Use postman for test:
 https://testeci.postman.co/workspace/TestEci-Workspace~1d36ca68-dbcc-4fe9-8928-836eb052ae5b/collection/33334270-3bd50790-7c1c-41fe-96f6-4a7a9b062d86?action=share&creator=33334270
 
+
+Or import the json in the root directory:
+AREP_FRAMEWORK.postman_collection.json
+
 ## Running the tests
 
 To run the automated tests for this system, you can use Maven, which integrates well with JUnit for running tests. These tests help ensure that the application is working as expected and validate the behavior of the system.
@@ -160,9 +166,56 @@ These tests ensure that the code follows standard Java coding conventions and be
 
 For example, the **testMethodNamingConvention()** test verifies that all method names follow the camelCase convention, a widely accepted naming style in Java. This helps maintain a consistent coding style across the projec
 
-## Deployment
+## Deployment  
 
-To deploy this project to a cloud environment, the application needs to be configured to dynamically listen on the appropriate port, typically provided as an environment variable. Additionally, you must ensure that all static resources (HTML, CSS, JS, and images) are correctly placed in accessible directories or bundled with the deployment package. The project should also be updated to handle logging properly, as cloud platforms do not typically display console output by default. Finally, ensure that the application is packaged correctly, often as a .jar file, and that it is set up to run continuously in the cloud environment.
+To deploy this project, we provide a Docker-based solution. We create an image using a `Dockerfile` to configure the environment. This file specifies important aspects, such as the port configuration. This is crucial because, when deploying the application, you need to specify both the internal port used by the app and the external port to expose.  
+
+Additionally, we include a `docker-compose.yml` file that automates the image creation process. You have two options for deployment:  
+
+1. **Build the image locally** and push it to your own Docker repository.  
+2. **Use the pre-built image** available in the following repository:  
+   - [Docker Hub - mateosebf/webserver](https://hub.docker.com/repository/docker/mateosebf/webserver).  
+
+Once you have access to the image, deployment can be done using cloud services like **Azure** or **AWS**. In this case, we focus on **AWS deployment**.  
+
+### AWS Deployment  
+
+To deploy the application on **AWS**, follow these steps:  
+
+1. **Create an EC2 instance** according to your requirements.  
+2. **Configure security rules** for the instance:  
+   - Allow inbound connections to the port you want to expose (e.g., `42000`).  
+3. **Connect to the EC2 instance** via SSH.  
+4. **Install and configure Docker** on the instance.  
+5. **Run the container** using the following command:  
+
+   ```sh
+   docker run -d -p 42000:6000 --name second mateosebf/webserver 
+   ```
+    ### Container Configuration  
+
+- `6000` is the **internal port** used by the server (defined in the `Dockerfile` as an environment variable).  
+- `42000` is the **exposed port** that will be accessible from the internet.  
+
+Once the container is running, you can access the application via the **public DNS** provided by AWS.  
+
+### Testing the System  
+
+You can test the deployment using the `/index.html` endpoint, which provides an example of a CRUD system. Additionally, before creating the image, you can define your own `RestController` classes. When deployed, all the defined `RestController` endpoints will be automatically available.  
+
+### Endpoint Structure  
+
+- **REST API endpoints:** `/rest/{endpoint}`  
+- **Lambda server endpoints:** `/app/{endpoint}`  
+
+### Example Deployment  
+
+![Deployment Example](readimages/deploy.png)  
+
+### Link to Deployment Demo  
+
+[Watch the deployment in action](https://pruebacorreoescuelaingeduco.sharepoint.com/sites/Reco842/Shared%20Documents/General/Recordings/Reuni%C3%B3n%20en%20_General_-20250226_204708-Grabaci%C3%B3n%20de%20la%20reuni%C3%B3n.mp4?web=1&referrer=Teams.TEAMS-WEB&referrerScenario=MeetingChicletGetLink.view)  
+
 
 ## Built With
 

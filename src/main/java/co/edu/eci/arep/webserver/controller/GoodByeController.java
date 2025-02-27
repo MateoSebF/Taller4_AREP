@@ -1,9 +1,9 @@
 package co.edu.eci.arep.webserver.controller;
 
-import co.edu.eci.arep.webserver.reflection.annotation.PostMapping;
-import co.edu.eci.arep.webserver.reflection.annotation.PutMapping;
 import co.edu.eci.arep.webserver.reflection.annotation.RequestParam;
 import co.edu.eci.arep.webserver.reflection.annotation.RestController;
+import co.edu.eci.arep.webserver.reflection.annotation.mapping.PostMapping;
+import co.edu.eci.arep.webserver.reflection.annotation.mapping.PutMapping;
 
 @RestController
 public class GoodByeController {

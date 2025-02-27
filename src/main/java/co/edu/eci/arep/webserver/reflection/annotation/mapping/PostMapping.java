@@ -1,4 +1,4 @@
-package co.edu.eci.arep.webserver.reflection.annotation;
+package co.edu.eci.arep.webserver.reflection.annotation.mapping;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

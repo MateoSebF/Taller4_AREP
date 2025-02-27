@@ -1,42 +1,45 @@
-package co.edu.eci.arep.webserver;
+package co.edu.eci.arep.webserver.http.server;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import co.edu.eci.arep.webserver.http.HttpResponse;
-import co.edu.eci.arep.webserver.http.HttpServer;
-import co.edu.eci.arep.webserver.reflection.annotation.DeleteMapping;
-import co.edu.eci.arep.webserver.reflection.annotation.PutMapping;
+import co.edu.eci.arep.webserver.http.manage.HttpRequest;
+import co.edu.eci.arep.webserver.http.manage.HttpResponse;
 import co.edu.eci.arep.webserver.reflection.annotation.RequestParam;
-import co.edu.eci.arep.webserver.reflection.annotation.GetMapping;
-import co.edu.eci.arep.webserver.reflection.annotation.PostMapping;
 import co.edu.eci.arep.webserver.reflection.annotation.RestController;
+import co.edu.eci.arep.webserver.reflection.annotation.mapping.DeleteMapping;
+import co.edu.eci.arep.webserver.reflection.annotation.mapping.GetMapping;
+import co.edu.eci.arep.webserver.reflection.annotation.mapping.PostMapping;
+import co.edu.eci.arep.webserver.reflection.annotation.mapping.PutMapping;
 
-public class MicroServer {
+public class RestServer {
 
-    public static HashMap<String, Method> servicesAnnotation = new HashMap<>();    
+    private HashMap<String, Method> servicesAnnotation;
 
-    public static void main(String[] args) {
-        loadComponents();
+    public RestServer() {
+        this.servicesAnnotation = new HashMap<>();
     }
 
-    private static void loadComponents() {
+    public void addServiceAnnotation(String endpoint, Method method) {
+        servicesAnnotation.put(endpoint, method);
+    }
+
+    public void loadComponents() {
         Path path = Paths.get("target/classes");
         try {
             List<Path> files = Files.walk(path)
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());
             for (Path file : files) {
+                System.out.println(file.toString());
                 makeNewEndPoint(file);
             }
         } catch (Exception e) {
@@ -44,12 +47,17 @@ public class MicroServer {
         }
     }
 
-    private static void makeNewEndPoint(Path file) {
+    private void makeNewEndPoint(Path file) {
         if (!file.toString().endsWith(".class"))
             return;
-        String baseClassName = file.toString().substring(15, file.toString().length() - 6);
+        String path = file.toString(); 
+        int start = path.indexOf("co");
+        int end = path.lastIndexOf(".class");
+        String baseClassName = path.substring(start, end);
         String className = baseClassName.replace("\\", ".");
+        className = className.replace("/", ".");
         try {
+            System.out.println(className);
             Class<?> restClass = Class.forName(className);
             if (!restClass.isAnnotationPresent(RestController.class))
                 return;
@@ -58,16 +66,16 @@ public class MicroServer {
                 String endPoint = "";
                 if (m.isAnnotationPresent(GetMapping.class)) {
                     GetMapping annotation = m.getAnnotation(GetMapping.class);
-                    endPoint = "_get" + annotation.value();
+                    endPoint = "_get/rest" + annotation.value();
                 } else if (m.isAnnotationPresent(PostMapping.class)) {
                     PostMapping annotation = m.getAnnotation(PostMapping.class);
-                    endPoint = "_post" + annotation.value();
+                    endPoint = "_post/rest" + annotation.value();
                 } else if (m.isAnnotationPresent(PutMapping.class)) {
                     PutMapping annotation = m.getAnnotation(PutMapping.class);
-                    endPoint = "_put" + annotation.value();
+                    endPoint = "_put/rest" + annotation.value();
                 } else if (m.isAnnotationPresent(DeleteMapping.class)) {
                     DeleteMapping annotation = m.getAnnotation(DeleteMapping.class);
-                    endPoint = "_delete" + annotation.value();
+                    endPoint = "_delete/rest" + annotation.value();
                 }
                 addServiceAnnotation(endPoint, m);
             }
@@ -76,25 +84,13 @@ public class MicroServer {
         }
     }
 
-    public static HttpResponse simulateRequest(String endpoint) throws IOException {
-        System.out.println("\nProcessing request: " + endpoint);
-
-        // Extract path and query parameters
-        String[] parts = endpoint.split("\\?", 2);
-        String path = parts[0]; // URL path (e.g., "get_/greeting")
-        String queryString = parts.length > 1 ? parts[1] : ""; // Query string
-
-        // Convert query string to a map
-        Map<String, String> queryParams = Arrays.stream(queryString.split("&"))
-                .map(param -> param.split("=", 2))
-                .filter(kv -> kv.length == 2)
-                .collect(Collectors.toMap(kv -> kv[0], kv -> kv[1]));
-
-        Method method = servicesAnnotation.get(path);
-        if (method == null){
-            return HttpServer.sendNotFoundResponse();
+    public HttpResponse manageRestControllerRequest(HttpRequest httpRequest) {
+        String endPoint = "_" + httpRequest.getMethod().toLowerCase() + httpRequest.getUri().getPath();
+        Map<String, String> queryParams = httpRequest.getQueryParams();
+        Method method = servicesAnnotation.get(endPoint);
+        if (method == null) {
+            return HttpResponse.sendFailureMessage(404, "A rest controller service not exist for this endpoint.");
         }
-
         try {
             // Process method parameters dynamically
             Parameter[] parameters = method.getParameters();
@@ -112,11 +108,9 @@ public class MicroServer {
                 }
             }
             HttpResponse httpResponse;
-            System.out.println(method.getReturnType().getName());
-            if(method.getReturnType().equals(HttpResponse.class)){
-                httpResponse = (HttpResponse)method.invoke(null, args);
-            }   
-            else{
+            if (method.getReturnType().equals(HttpResponse.class)) {
+                httpResponse = (HttpResponse) method.invoke(null, args);
+            } else {
                 httpResponse = new HttpResponse();
                 httpResponse.setStatusCode(200);
                 httpResponse.setBody((String) method.invoke(null, args));
@@ -130,10 +124,4 @@ public class MicroServer {
             return httpResponse;
         }
     }
-
-
-    public static void addServiceAnnotation(String endpoint, Method method) {
-        servicesAnnotation.put(endpoint, method);
-    }
-
 }

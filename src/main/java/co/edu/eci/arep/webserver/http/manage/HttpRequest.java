@@ -1,4 +1,4 @@
-package co.edu.eci.arep.webserver.http;
+package co.edu.eci.arep.webserver.http.manage;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -22,36 +22,41 @@ public class HttpRequest {
         if (request == null || request.isEmpty()) {
             return null;
         }
-        System.out.println("This is the request: " + request);
-        String[] lines = request.split("\n");
-        
-        String[] requestLine = lines[0].split(" ");
-        String method = requestLine[0];
-        URI uri = URI.create(requestLine[1]); 
-        Map<String, String> headers = new HashMap<>();
-        Map<String, String> queryParams = new HashMap<>();
-        String body = "";
-        boolean readingBody = false;
-        for (int i = 1; i < lines.length; i++) {
-            if (lines[i].isEmpty()) {
-                readingBody = true;
-                continue;
+        try {
+            System.out.println(request);
+            String[] lines = request.split("\n");
+
+            String[] requestLine = lines[0].split(" ");
+            String method = requestLine[0];
+            URI uri = URI.create(requestLine[1]);
+            Map<String, String> headers = new HashMap<>();
+            Map<String, String> queryParams = new HashMap<>();
+            String body = "";
+            boolean readingBody = false;
+            for (int i = 1; i < lines.length; i++) {
+                if (lines[i].isEmpty()) {
+                    readingBody = true;
+                    continue;
+                }
+                if (readingBody) {
+                    body += lines[i];
+                } else {
+                    String[] header = lines[i].split(": ");
+                    headers.put(header[0], header[1]);
+                }
             }
-            if (readingBody) {
-                body += lines[i];
-            } else {
-                String[] header = lines[i].split(": ");
-                headers.put(header[0], header[1]);
+            if (uri.getQuery() != null) {
+                String[] params = uri.getRawQuery().split("&");
+                for (String param : params) {
+                    String[] keyValue = param.split("=");
+                    queryParams.put(keyValue[0], keyValue[1]);
+                }
             }
+            return new HttpRequest(method, uri, headers, queryParams, body);
+        } catch (Exception e) {
+            return null;
         }
-        if (uri.getQuery() != null) {
-            String[] params = uri.getRawQuery().split("&");
-            for (String param : params) {
-                String[] keyValue = param.split("=");
-                queryParams.put(keyValue[0], keyValue[1]);
-            }
-        }
-        return new HttpRequest(method, uri, headers, queryParams, body);
+
     }
 
     /**
@@ -63,7 +68,8 @@ public class HttpRequest {
      * @param queryParams A map containing query parameters.
      * @param body        The request body (applicable for POST, PUT, etc.).
      */
-    public HttpRequest(String method, URI uri, Map<String, String> headers, Map<String, String> queryParams, String body) {
+    public HttpRequest(String method, URI uri, Map<String, String> headers, Map<String, String> queryParams,
+            String body) {
         this.method = method;
         this.uri = uri;
         this.headers = new HashMap<>(headers);
