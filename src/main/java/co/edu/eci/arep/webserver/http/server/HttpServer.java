@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
 
 import co.edu.eci.arep.webserver.http.manage.HttpRequest;
@@ -25,6 +26,8 @@ public class HttpServer implements Runnable {
     private LambdaServer lambdaServer;
     private RestServer restServer;
     private ExecutorService pool;
+    private volatile boolean running = true; 
+    private ServerSocket serverSocket;
 
     public HttpServer(int MAX_THREADS, String staticFilesPath) {
         this.MAX_THREADS = MAX_THREADS;
@@ -67,7 +70,7 @@ public class HttpServer implements Runnable {
      * connections
      */
     public void run() {
-        ServerSocket serverSocket = null;
+        serverSocket = null;
         try {
             serverSocket = new ServerSocket(getPort());
         } catch (IOException e) {
@@ -76,7 +79,6 @@ public class HttpServer implements Runnable {
         }
         pool = Executors.newFixedThreadPool(MAX_THREADS);
         System.out.println(MAX_THREADS);
-        boolean running = true;
         while (running) {
             try {
                 System.out.println("Listo para recibir ...");
@@ -128,6 +130,31 @@ public class HttpServer implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stop() {
+        running = false; // Detener el bucle principal
+
+        try {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error closing server socket: " + e.getMessage());
+        }
+
+        if (pool != null) {
+            pool.shutdown();
+            try {
+                if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
+                    pool.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                pool.shutdownNow();
+            }
+        }
+
+        System.out.println("Server stopped.");
     }
 
     /**

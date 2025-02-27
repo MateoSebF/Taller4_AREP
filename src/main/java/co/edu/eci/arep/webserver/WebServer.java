@@ -27,6 +27,12 @@ public class WebServer {
         httpServer = new HttpServer(10, "/static");
         Thread runningServer = new Thread(httpServer);
         runningServer.start();
+
+        // Agregar un shutdown hook para detener el servidor correctamente
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutting down server gracefully...");
+            httpServer.stop();
+        }));
     }
 
 }

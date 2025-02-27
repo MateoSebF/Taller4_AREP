@@ -8,7 +8,7 @@ A key feature of this project introduced in Laboratory 2 is the ability to defin
 
 Additionally, Laboratory 3 introduces an innovative feature: the implementation of classes that simulate a REST controller using annotations. This functionality effectively mimics the behavior of the Spring Boot framework, providing a familiar structure for those experienced with it.
 
-In the Laboratory 4, we introduced how to deploy this service using Docker and AWS.
+In Laboratory 4, we introduced how to deploy this service using Docker and AWS. Additionally, we improved concurrency by implementing a thread pool to manage multiple requests efficiently. We also incorporated graceful shutdown mechanisms to terminate the server cleanly, ensuring proper resource management and a controlled shutdown process.
 
 ## Getting Started
 
