@@ -136,6 +136,9 @@ https://testeci.postman.co/workspace/TestEci-Workspace~1d36ca68-dbcc-4fe9-8928-8
 Or import the json in the root directory:
 AREP_FRAMEWORK.postman_collection.json
 
+
+To shutdown the server you can go to /rest/shutdown
+
 ## Running the tests
 
 To run the automated tests for this system, you can use Maven, which integrates well with JUnit for running tests. These tests help ensure that the application is working as expected and validate the behavior of the system.

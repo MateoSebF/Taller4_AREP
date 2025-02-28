@@ -1,5 +1,6 @@
 package co.edu.eci.arep.webserver;
 
+import co.edu.eci.arep.webserver.controller.ShutdownController;
 import co.edu.eci.arep.webserver.http.server.HttpServer;
 
 /**
@@ -25,10 +26,14 @@ public class WebServer {
 
     public WebServer() {
         httpServer = new HttpServer(10, "/static");
+
+        // Set the HttpServer instance in the ShutdownController
+        ShutdownController.setServer(httpServer);
+
         Thread runningServer = new Thread(httpServer);
         runningServer.start();
 
-        // Agregar un shutdown hook para detener el servidor correctamente
+        // Add a shutdown hook to stop the server gracefully
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Shutting down server gracefully...");
             httpServer.stop();
